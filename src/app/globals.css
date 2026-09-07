@@ -1,26 +1,145 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --sidebar-width: 256px;
+  --background: #080b12;
+  --surface: #0f1420;
+  --surface-elevated: #151c2b;
+  --border: #232c3d;
+  --foreground: #f4f7fb;
+  --muted: #8e9aae;
+  --primary: #36d399;
+  --primary-strong: #20b984;
+  --danger: #fb7185;
+  --warning: #fbbf24;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+main {
+  width: calc(100% - var(--sidebar-width) - 24px);
+  min-height: calc(100vh - 24px) !important;
+  margin-top: 12px;
+  margin-right: 12px;
+  margin-bottom: 12px;
+  margin-left: calc(var(--sidebar-width) + 12px) !important;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: clip;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 24px;
+  background: rgba(8, 12, 18, 0.82);
+  box-shadow:
+    0 24px 70px -46px rgba(0, 0, 0, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+  transition: margin-left 500ms ease-in-out, width 500ms ease-in-out;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+main > header {
+  position: relative;
+  border-bottom-color: transparent !important;
+  box-shadow: 0 18px 45px -38px rgba(0, 0, 0, 0.85);
+  border-radius: 24px 24px 0 0;
+}
+
+main > header::after {
+  position: absolute;
+  right: 2rem;
+  bottom: 0;
+  left: 2rem;
+  height: 1px;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(148, 163, 184, 0.14) 18%,
+    rgba(52, 211, 153, 0.12) 50%,
+    rgba(148, 163, 184, 0.14) 82%,
+    transparent
+  );
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--background);
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  background:
+          radial-gradient(
+                  circle at 90% 0%,
+                  rgba(54, 211, 153, 0.08),
+                  transparent 28rem
+          ),
+          var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --sidebar-width: 72px;
+  }
+
+  main {
+    width: calc(100% - 80px);
+    min-height: calc(100vh - 16px) !important;
+    margin-top: 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    margin-left: 72px !important;
+    border-radius: 18px;
+  }
+
+  main > header {
+    border-radius: 18px 18px 0 0;
+  }
+
+  main > header::after {
+    right: 1rem;
+    left: 1rem;
+  }
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: rgba(54, 211, 153, 0.28);
+  color: #ffffff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #080b12;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a3447;
+  border: 2px solid #080b12;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a465b;
 }
