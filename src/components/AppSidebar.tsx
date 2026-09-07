@@ -27,6 +27,7 @@ const items = [
 export default function AppSidebar() {
   const pathname = usePathname();
   const [width, setWidth] = useState(DEFAULT_WIDTH);
+  const [resizing, setResizing] = useState(false);
   const compact = width < 176;
 
   useEffect(() => {
@@ -47,16 +48,16 @@ export default function AppSidebar() {
     document.documentElement.style.setProperty("--sidebar-width", `${safeWidth}px`);
   }
 
-  function finishResize() {
-    window.localStorage.setItem("vivemed-sidebar-width", String(width));
-  }
-
   function startResize(event: React.PointerEvent<HTMLDivElement>) {
     event.preventDefault();
+    setResizing(true);
+    document.documentElement.classList.add("sidebar-resizing");
     const resize = (moveEvent: PointerEvent) => updateWidth(moveEvent.clientX);
     const stop = () => {
       window.removeEventListener("pointermove", resize);
       window.removeEventListener("pointerup", stop);
+      setResizing(false);
+      document.documentElement.classList.remove("sidebar-resizing");
       const currentWidth = getComputedStyle(document.documentElement).getPropertyValue("--sidebar-width");
       window.localStorage.setItem("vivemed-sidebar-width", String(parseInt(currentWidth, 10)));
     };
@@ -73,11 +74,10 @@ export default function AppSidebar() {
   return (
     <aside
       data-app-sidebar
-      style={{ width }}
-      onPointerUp={finishResize}
-      className="fixed inset-y-0 left-0 z-50 flex max-w-[82vw] flex-col overflow-visible bg-[#0b1018]/95 shadow-[18px_0_50px_rgba(0,0,0,0.22)] backdrop-blur-xl transition-[width] duration-500 ease-in-out after:pointer-events-none after:absolute after:inset-y-8 after:right-0 after:w-px after:bg-gradient-to-b after:from-transparent after:via-white/10 after:to-transparent"
+      style={{ width: "var(--sidebar-width)" }}
+      className={`fixed inset-y-0 left-0 z-50 flex max-w-[82vw] flex-col overflow-visible bg-[#0b1018]/95 shadow-[18px_0_50px_rgba(0,0,0,0.22)] backdrop-blur-xl will-change-[width] after:pointer-events-none after:absolute after:inset-y-8 after:right-0 after:w-px after:bg-gradient-to-b after:from-transparent after:via-white/10 after:to-transparent ${resizing ? "transition-none" : "transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"}`}
     >
-      <div className={`relative flex h-24 shrink-0 items-center after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-gradient-to-r after:from-transparent after:via-white/10 after:to-transparent ${compact ? "flex-col justify-center gap-1" : "gap-3 px-5"}`}>
+      <div className={`relative flex h-24 shrink-0 items-center overflow-hidden after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-gradient-to-r after:from-transparent after:via-white/10 after:to-transparent ${compact ? "flex-col justify-center gap-1" : "gap-3 px-5"}`}>
         <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-emerald-300 to-emerald-500 text-[#052218] shadow-[0_8px_25px_rgba(52,211,153,0.2)]">
           <HeartPulse size={21} strokeWidth={2.2} />
         </div>
@@ -87,7 +87,7 @@ export default function AppSidebar() {
         </div>
       </div>
 
-      <nav className="flex-1 space-y-1.5 px-3 py-6">
+      <nav className="flex-1 space-y-1.5 overflow-hidden px-3 py-6">
         <button
           type="button"
           onClick={toggle}
@@ -119,7 +119,7 @@ export default function AppSidebar() {
         })}
       </nav>
 
-      <div className="px-3 pb-5">
+      <div className="overflow-hidden px-3 pb-5">
         {!compact && (
           <div className="mb-3 rounded-xl bg-white/[0.025] px-4 py-3">
             <p className="text-[10px] uppercase tracking-wider text-white/25">Ambiente</p>
